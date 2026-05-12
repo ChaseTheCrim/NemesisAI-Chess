@@ -1,35 +1,36 @@
 # Nemesis AI — Uyumlanan Satranç Rakibi
 
-Maç sırasında *seni* öğrenen bir satranç oyunu.
+Maç sırasında *seni* öğrenen yapay zeka.
 
-Sıradan satranç motorlarının aksine — onlar sadece nesnel olarak güçlü olmaya çalışırlar — **Nemesis maça zayıf başlar ve oynadıkça senin oyun tarzının bir modelini oluşturur**, oyun ilerledikçe *sana karşı* daha da zorlu bir rakibe dönüşür. Ne kadar uzun oynarsan, nasıl düşündüğünü o kadar iyi anlar — ve sana karşı o kadar özel bir mücadele verir.
+Klasik satranç oynaması için tasarlanmış yapay zeka botları(bkz: stockfish) sadece zor olmak için yapılmış botlardır. Nemesis öyle değildir. **Nemesis sen oyunu oynadıkça aktif olarak *sana* adapte olur**. Senin oyun tarzının bir modelini oluşturur ve sadece senin için özel bir rakip haline gelir. Maç uzadıkça senin düşüncelerinle düşünür, senin fikirlerinle güçlenir ve sana aradığın o eşi benzeri olmayan mücadeleyi sunar.
 
 Ostim Teknik Üniversitesi'nde Derin Öğrenme dersi projesi olarak geliştirildi.
 
 ---
 
-## Konsept
+## Mantık
 
-Çoğu satranç yapay zekâsı nesnel olarak güçlü olmaya odaklanır — herkese karşı aynı oynar, binlerce hamle ileriye kadar hesap yapar. Nemesis farklı çalışır. Maça zayıf başlar, ama her hamlende:
+Çoğu satranç için geliştirilmiş yapay zeka, herkese karşı aynı hesapları yapar. Her zaman sen daha piyonunu oynatmadan binlerde hamle ilerden senin yapacaklarını bilir. Bu satrancın çarpışan rekabet ve zihin kuvveti gerektiren yapısını baltalar. Maç başladığı an oynanacak bir maç oynamazsın. Kaybedilecek bir maç izlersin. Nemesis'i farklı kılan tarafı; 
 
-- **Bir LSTM sinir ağı, hamle geçmişin üzerinden canlı eğitim alır** ve örüntülerini öğrenir
-- **Oyuncu profili** agresifliğini, hamle kalitesini ve anlık momentumunu takip eder
-- Yapay zekânın güç tahmini (MMR) seni daha iyi tanıdıkça yükselir
-- Hamle seçimi **sana özgü eğilimleri çürütmek için** uyarlanır — pervasız bir saldırgansan tuzaklara çekilirsin, pasif oyuncuysan aktiviteye zorlanırsın
+- Maçın başında yüzlercı yıldır bilinen *"Satranç Teorisi"* dışında hiçbir anlam mekanizması yoktur. **Maç başlamadan senin yapılabilir ilk 15 hamleni bilmez.**
+- Bunun yerine özelleştirilmiş olan bir **Recursive Neural Network yapısı olan LSTM kullanır**. Oyuncunun hamlelerini teker teker öğrenir. **SANA ADAPTE OLUR.**
+- Ne kadar agresif? Ne kadar defansif? ***Senin* hamlelerin üzerinden senin oynama şemanı çıkartır.**
+- Maç daha çetin bir hale geldikçe öğrendiği şeylerin efektifliği **kendi MMR'ı** ile birlikte artar.
+- Oyuncuyu konfor noktasında söküp almak için tasarlanmıştır *"Kalkanlarını çekmiş düşmanların kalkanlarını yıkması, mızraklarıyla saldıran rakiplerin mızraklarını kırması"* için tasarlanmıştır.
 
-Sonuç bir akıl oyununa dönüşür. Sadece daha iyi satranç oynayarak değil, **maç ortasında oyun tarzını değiştirerek** karşı koyabilirsin. Nemesis taktiğini öğrendi mi? Başka bir taktiğe geç ve onu yeniden öğrenmeye zorla. Şu an kolayca kazanıyor musun? Sessizce aşırı güvenini profilliyor — tetikte ol.
+Nemesis temelinde bu özellikleriyle sıralanabilir. Peki bu ne mi sağlar? 2000'li yıllardan beri hepimizin artık kabullendiği ruhsuz yapay zeka botlarının aksine sadece iyi satranç oynamaz. Oyuncuyu sürekli olarak yeni taktikler denemeye, kendini sınamaya ve kendini daha iyi bir oyuncu yapmaya, clutch olan hamleleri görmeye zorlar. Satranç hak ettiği yer olan zihinlerin amansız kapışmasına tekrardan bürünür. Nemesis sana adapte olması için tasarlanmış olabilir, ancak ona karşı yeni taktikler bulabilecek kadar iyi düşündün mü? Düşünsen iyi olur. Yoksa onu yenmen beklediğinden daha zor olucak.
 
 ---
 
 ## Mimari
 
-Proje iki yarımdan oluşur ve aralarında JSON-pipe protokolüyle iletişim kurarlar.
+Bu Proje iki ana kapsam altında üretilmiştir:
 
-**Önyüz — Qt / C++**
-Tüm görselleri ve girdileri yönetir. Mıknatıs etkisiyle kare üzerine oturma özelliğine sahip sürükle-bırak taşları, akıcı kaydırma-yakınlaştırma, sağ tık ile kaydırma ve hata ayıklama için X-Ray modu (`X` tuşu) içerir.
+**Frontend C++/Qt**
+Itch.io üzerinden copyright hakları bedava olan ve inanılmaz güzel gözüken pixel temalı taşlar, arka planda çalışan ağır eğitim süreçlerine balta koymaması ve akıcı ve olması için C++ üzerinden Qt yoluyla ince bir işçilik ile hazırlanmıştır. Quality of life için her bir taş yakın oldukları karoya bir manyetizma mekaniği ile oturtulmuş ve dikkat gerektiren hamlelere yakından bakabilmek için yakınlaştırma ve ekran hareket ettirme özellikleri eklenmiştir. Kolay taş kontrolü için her taş için hitboxlar ayarlanmış ve "X" tuşu ile bunların görülebilmesi için debug ayarı eklenmiştir. Öyle ki, nemesis engine olmadan player vs player bile oynanabilmesi için tasarlanmış bir motordur.
 
-**Arka uç — Python (PyTorch ve python-chess)**
-Yapay zekânın tüm beynini görünmez şekilde arka planda çalıştırır. Hamleleri doğrular, oyuncudan öğrenir ve cevap seçer. Qt önyüzü Nemesis'in nasıl düşündüğünü bilmez — sadece hamle gönderir ve cevap alır.
+**Backend Python (C bazlı kütüphaneler)**
+Mucizenin yaşandığı yer tam olarak burasıdır, json formatında frontend tarafından gönderilmiş bilgiler "Nemesis Engine" içinde işlenir. Yarım saniyeden kısa bir sürede oyuncunun yaptığı hamle yapay zeka mekanizması içinde geri işleme yoluyla sinir ağına sokulur ve oyuncuyu öğrenme işlemi başlar, "Satranç Teorisi" üzerine el ile yazılmış değerlendirme metriklerini kullanarak her hamlesinin değerini hesaplar. Kendine ait profil sistemi sayesinde LTSM tarafından öğrenilen hamleler pattern recognizition yoluyla sınıflandırılır ve oyuncuya karşı direnç kazanır. Bütün bu işlemleri yaparken ise, Python kullanmasının yavaşlığına PyTorch gibi C temelli kütüphaneler yoluyla size hissettirmez bile.
 
 ```
 ChessBotUI/
@@ -53,7 +54,7 @@ ChessBotUI/
 
 ---
 
-## Derin Öğrenme Bileşenleri
+## Nemesis'in Öğrenmesi
 
 LSTM her zaman adımında **778 float'lık girdi** alır:
 
@@ -62,45 +63,48 @@ LSTM her zaman adımında **778 float'lık girdi** alır:
 - 2 float — kodlanmış hamle (kaynak kare, hedef kare)
 - 2 float — bu hamlenin gözlemlenen agresifliği ve kalitesi
 
-Üç ayrı çıkış başlığından **paralel olarak üç tahmin** üretir:
+Nemesis daha öncesinde bahsettiğimiz gibi, LTSM üzerine kuruludur ve her tur oyun ile alakalı *778 floatlık bilgiyi frontend üzerinden alır*, bu bilgiler şu şekildedir:
+- 768 - taş pozisyonları ve tahta
+- 6 - rok, sıra, en passent bilgisi
+- 2 - oynanan hamle ile başangıç ile bitiş noktası
+- 2 - hamle evaluation değerleri
 
-- Oyuncunun muhtemel sonraki hamlesi (kaynak kare, hedef kare)
-- Agresiflik profili (pasif ↔ saldırgan)
-- Kalite profili (hata yapan ↔ doğru oynayan)
+Bu işin sonucunda LSTM'e kaydedilen bilgiler yolunda şimdilik **üç ana tahmin yapılır**, bı tahminler şöyledir:
 
-Gizli durum (hidden state) bir oyun boyunca **hamleler arasında korunur** — modelin senin hakkındaki anlayışı maç boyunca birikir. Her oyuncu hamlesinden sonra ağ, gradyan kırpma ile zaman içinde kesilmiş geri yayılım (truncated BPTT) yapar.
+- Evaluation değerleri üzerinden; sonraki hamle tahmini
+- Oyuncunun tansiyonu (Agresif mi? Pasif mi?)
+- Oyuncunun bilgi düzeyi (MMR miktarı)
 
-Selector bu LSTM çıktısını **canlı oyuncu profili** (üstel unutma ile maç ortasındaki stil değişiklikleri yakalanır), **MMR güç tahmini** (veri biriktikçe yükselir) ve **klasik pozisyon değerlendiricisi** ile birleştirerek aday hamleleri puanlar.
+Bu bilgiler eşiliğinde hidden state bir oyun boyunca, her hamle arasında korunur. Oyuncunun yaptığı hamlelerin her birisi geri besleme aşamalarında hesaplanır ve gradyanlar ince bir şekilde hesaplanır.
 
-### Klasik Değerlendirici
+İleri besleme sonucu oluşan LSTM çıktısı, oyuncu profili için belirlenmiş aralıklarda oynamaya sebep olur, bu değerler; MMR, hamle değerlendirmesi ve oyuncunun oynama stilleri üzerinedir. Bu bilgiler, "evaluator" a gönderilir.
 
-Pozisyon değerlendiricisi tamamen 1970'lerden beri kamuya açık satranç ilkelerinden inşa edildi:
+### Evaluator 
 
-- **Materyal sayımı** — taşların göreli değerleri (piyon=100, at=320, vb.)
-- **Taş-kare tabloları** — her taşın her karedeki konumsal bonusu
-- **Hareketlilik** — daha çok yasal hamleye sahip taraf için bonus
-- **Piyon yapısı** — çift ve izole piyonlar için cezalar
-- **Tehdit algılama** — havada kalan taşlar gibi tek hamlelik taktikleri yakalayan basitleştirilmiş Static Exchange Evaluation
+Evaluator, diğer adıyla poziyson değerlendiricisi aslen internet üzerinden almayı düşündüğüm, hatta zamanında stockfish ile denediğim bir mekanikti. Ancak stockfish'i böyle bir projede kullanmanın projenin ruhuna aykırı olduğuna inandığım için bu konu üstüne uzun süre düşünerek, kendi değerlendiricimi yazdım. Bu değerlendirici 1970'li senelerden beri herkese açık olarak paylaşılan "Satranç Teorisi" üzerine kurulu.
 
-Stockfish kadar güçlü değil, ama LSTM'in çevrimiçi eğitimi için tutarlı bir "bu hamle iyi mi kötü mü" sinyali vermeye fazlasıyla yetiyor.
+- **Taş Değeri** — Her taşın kendine ait innate değerleri (piyon=100, at=320, vb.)
+- **Taş Konum Değeri** — Her taşın her karedeki yerlerine göre kazandıkları ekstra önem miktarı
+- **Hamle miktarı** — Bir taşın her yapabildiği hamle miktarına eşdeğer şekilde bonus önem miktarı
+- **Piyon aktifliği** — Piyonların aktif kullanımına teşvik için aktiflik ve çifte duruş puanlaması
+- **Tehdit algılama** — Tek hamlelik ileriyi ön görebilen "Static Exchange Evaluation" algoritması
 
-### Uyarlanma Nasıl Çalışır
+Bu sayede, belki bir stockfish olmasada, öğrenme profilinin gelişimi yoluyla çekici bir deneyim sunmayı hedefliyorum.
 
-Her hamle puanlaması, mevcut MMR'a göre ağırlıklandırılan dört bileşenden oluşur:
+### Static Exchange Evaluation
 
-1. **Temel değerlendirme** — bu hamle nesnel olarak ne kadar iyi?
-2. **Stil karşı koyma** — oyuncunun profilini çürütüyor mu?
-   - Pervasız saldırgan → sağlam, tuzaklı hamleler
-   - Pasif oyuncu → aktivite zorlayıcı hamleler
-   - Kendine güvenli momentum → komplikasyon getirici hamleler
-3. **Tahmin tuzağı** — oyuncunun gitmesi muhtemel kareyi cezalandırıyor mu?
-4. **MMR ölçekli gürültü** — yapay zeka oyuncunun modelini netleştirdikçe rastgelelik azalır
+Her hamle, Nemesis'in oyun sırasındaki MMR ve oyuncu MMR miktarına bağlı dört farklı temelden yararlanır.
 
-MMR tabanında (~1000), aday havuzu geniş ve gürültü yüksektir — Nemesis gerçekten yenilebilir hisseder. MMR tavanında (~1500), havuz daralır ve LSTM profili keskin, hedefli oyunu yönlendirir.
+1. **Temel Değer** — Bu hamle özünde ne kadar iyi?
+2. **Oyuncu Stil Uyumu** — Oyuncunun oluşturduğu patternlarla nasıl bir etkileşim üretiyor?
+3. **Tahmin Tuzağı** — Oyuncunun yapacağı tahimini hareketleri cezalandırıyor mu?
+4. **MMR Orantılı Noise** — Nemesis oyuncu ile alakalı daha fazla pattern çıkarttıkça rastgelelik miktarı azalır.
+
+MMR zamanla artar ve Nemesis'in ilk başlarda gerçekten zayıf bile oynadığı zamanlar olur. Ancak zaman ilerledikçe daha keskin hal alan MMR oyuncuyu giderek köşeye sıkıştırır.
 
 ---
 
-## Kurulum
+## Source Code Üzerinden Kurulum
 
 ### Gereksinimler
 
@@ -108,9 +112,9 @@ MMR tabanında (~1000), aday havuzu geniş ve gürültü yüksektir — Nemesis 
 - Python 3.9 veya daha yenisi
 - CMake 3.16 veya daha yenisi
 
-### Derleme
+### Compiling
 
-Repoyu klonla:
+GitHub repository'si klonlama:
 
 ```bash
 git clone https://github.com/ChaseTheCrim/ChessBotUI.git
@@ -145,36 +149,36 @@ ninja
 
 ---
 
-## Hazır Sürüm
+## Peki bunlar çok mu uzun geldi?
 
-Kaynaktan derlemek istemiyor musun? En son sürüm zip dosyasını [Releases sayfasından](../../releases) indirebilirsin. Sıkıştırılmış klasörü aç ve `ChessBotUI.exe`'yi çalıştır — Python veya derleme gerekmez.
+Eğer bütün bunlar çok yorucu geldiyse, her zaman Release versiyonu indirip tek tık ile (**ChessBotUI.exe**) açıp oynayabilirsin!
 
 ---
 
-## Nasıl Oynanır
+## Kontroller
 
-Sen **beyaz** oynarsın, Nemesis **siyah** oynar. Tahta köşede yer alır — özgürce kaydırabilir ve yakınlaştırabilirsin.
+Oyuncu, *Nemesis'e karşı bir şansı olması için* ve *centilmenlik için* **Beyaz** ile başlar. Nemesis ise her zaman **Siyah** ile başlar.
 
-| İşlem                | Kontrol                          |
+|        İşlev         |              Kontrol             |
 |----------------------|----------------------------------|
 | Taş hareket ettir    | Sol tıkla sürükle                |
 | Görünümü kaydır      | Sağ tıkla sürükle                |
-| Yakınlaştır/Uzaklaştır | Fare tekerleği                  |
+| Yakınlaştır/Uzaklaştır | Fare tekerleği                 |
 | Görünümü sıfırla     | Orta tık                         |
 | Hitbox göster/gizle  | `X` tuşu (hata ayıklama modu)    |
 
-Oyun **şah mat**, **pat**, **üçlü tekrar**, **50 hamle kuralı** veya **yetersiz materyal** durumunda biter. Sonuç tahta üzerinde gösterilir.
+Oyun klasik satranç kurallarıyla oynanır; **şah**, **mat**, **pat**, ilk 50 hamle kuralları geçerlidir.
 
 ---
 
-## Gelecek Çalışmalar
+## Update Planları:
 
-Mevcut uygulama temel uyarlanma mekaniğini yakalıyor. Tasarlanmış ama henüz uygulanmamış birkaç genişletme:
+Şu anda zaman kısıtlamaları sebebiyle, NemesisAI çalışır durumda bir uygulama olsada, yinede developer olarak eklemek istediğim oldukça şey var, bunlar kısaca;
 
-- **Tuzak örüntü kütüphanesi** — hangi oyuncu profilini sömüreceğiyle etiketlenmiş taktik kurulumlar (çoban matı, son sıra zayıflığı, aşırı yüklü taş tuzakları)
-- **Hamle zamanlaması** — oyuncunun her hamleyi ne kadar düşündüğünü (anlık hamleler vs tereddüt) LSTM girdisine dahil etmek
-- **Oyunlar arası hafıza** — şu anda Nemesis oyunlar arasında seni unutuyor. Diske kaydedilmiş kalıcı profil, düzenli rakipleri hatırlamasını sağlar
-- **Terfi seçimi** — oyuncu şu anda piyon terfisinde sadece otomatik vezir seçebiliyor; alt terfi için bir arayüz diyalogu gerekir
+- **Var olan patternlar için elle yazılmış bir kütüphane** — Nemesis seninle alakalı bulduğu bilgileri işliyor, ancak bu patternlara karşı daha dayanıklı olması için bilindik oyun şemalarına dair bir kütüphane (çobana matı, sicilan savunması etc.)
+- **Hamler arası zaman ölçümü** — Oyuncunun her hamlesi arasında ne kadar süre olduğunun hesaplanması ile oyuncunun zihinsel ruh halini anlayıp tedirginliğini avantaja çevirebilmek.
+- **Kalıcı hafıza** — Şu anda Nemesis sadece oyun içinde öğrenir ve oyun bittikten sonra yapay sinir ağı sıfırlanır. Eğitimin oyunlar arası devam'ı en büyük hedeflerimden birisi.
+- **Ses efekleri ve Anmiasyonlar** — Daha temiz, derin ve eğlenceli bir deneyim için oyuna animasyonlar, efekler, sesler eklemek ve zenginleştirmek istiyorum.
 
 ---
 
