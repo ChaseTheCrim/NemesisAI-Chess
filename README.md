@@ -111,6 +111,7 @@ MMR zamanla artar ve Nemesis'in ilk başlarda gerçekten zayıf bile oynadığı
 - C++17 derleyicisi olan Qt 6 (MinGW veya MSVC)
 - Python 3.9 veya daha yenisi
 - CMake 3.16 veya daha yenisi
+- Windows 11 İşletim Sistemi
 
 ### Compiling
 
@@ -127,7 +128,6 @@ Python ortamını kur:
 cd engine
 python -m venv venv
 venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Linux / macOS
 pip install -r requirements.txt
 ```
 
@@ -179,6 +179,7 @@ Oyun klasik satranç kurallarıyla oynanır; **şah**, **mat**, **pat**, ilk 50 
 - **Hamler arası zaman ölçümü** — Oyuncunun her hamlesi arasında ne kadar süre olduğunun hesaplanması ile oyuncunun zihinsel ruh halini anlayıp tedirginliğini avantaja çevirebilmek.
 - **Kalıcı hafıza** — Şu anda Nemesis sadece oyun içinde öğrenir ve oyun bittikten sonra yapay sinir ağı sıfırlanır. Eğitimin oyunlar arası devam'ı en büyük hedeflerimden birisi.
 - **Ses efekleri ve Anmiasyonlar** — Daha temiz, derin ve eğlenceli bir deneyim için oyuna animasyonlar, efekler, sesler eklemek ve zenginleştirmek istiyorum.
+- **Başka Platformlara Yönelik Çalışmalar** — Şu anda sadece Windows 11 sistemlerde test edilmiştir ve sadece Windows sistemlerde denemesi tavsiye edilir. Ancak başka sistemlerdede optimize ve kullanılablir olması hedeflenmektedir.
 
 ---
 
