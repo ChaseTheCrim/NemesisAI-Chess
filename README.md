@@ -1,4 +1,4 @@
-# Nemesis AI — Uyumlanan Satranç Rakibi
+# Nemesis AI - Uyumlanan Satranç Rakibi
 
 Maç sırasında *seni* öğrenen yapay zeka.
 
