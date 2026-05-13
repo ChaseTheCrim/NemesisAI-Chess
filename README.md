@@ -58,10 +58,10 @@ ChessBotUI/
 
 LSTM her zaman adımında **778 float'lık girdi** alır:
 
-- 768 float — taş pozisyonlarını kodlayan 12 ikili 8x8 düzlem (her renk ve taş tipi için bir düzlem)
-- 6 float — rok hakları, sıra hangi tarafta, en passant karesi
-- 2 float — kodlanmış hamle (kaynak kare, hedef kare)
-- 2 float — bu hamlenin gözlemlenen agresifliği ve kalitesi
+- 768 float - taş pozisyonlarını kodlayan 12 ikili 8x8 düzlem (her renk ve taş tipi için bir düzlem)
+- 6 float - rok hakları, sıra hangi tarafta, en passant karesi
+- 2 float - kodlanmış hamle (kaynak kare, hedef kare)
+- 2 float - bu hamlenin gözlemlenen agresifliği ve kalitesi
 
 Nemesis daha öncesinde bahsettiğimiz gibi, LTSM üzerine kuruludur ve her tur oyun ile alakalı *778 floatlık bilgiyi frontend üzerinden alır*, bu bilgiler şu şekildedir:
 - 768 - taş pozisyonları ve tahta
@@ -83,11 +83,11 @@ Bu bilgiler eşiliğinde hidden state bir oyun boyunca, her hamle arasında koru
 
 Evaluator, diğer adıyla poziyson değerlendiricisi aslen internet üzerinden almayı düşündüğüm, hatta zamanında stockfish ile denediğim bir mekanikti. Ancak stockfish'i böyle bir projede kullanmanın projenin ruhuna aykırı olduğuna inandığım için bu konu üstüne uzun süre düşünerek, kendi değerlendiricimi yazdım. Bu değerlendirici 1970'li senelerden beri herkese açık olarak paylaşılan "Satranç Teorisi" üzerine kurulu.
 
-- **Taş Değeri** — Her taşın kendine ait innate değerleri (piyon=100, at=320, vb.)
-- **Taş Konum Değeri** — Her taşın her karedeki yerlerine göre kazandıkları ekstra önem miktarı
-- **Hamle miktarı** — Bir taşın her yapabildiği hamle miktarına eşdeğer şekilde bonus önem miktarı
-- **Piyon aktifliği** — Piyonların aktif kullanımına teşvik için aktiflik ve çifte duruş puanlaması
-- **Tehdit algılama** — Tek hamlelik ileriyi ön görebilen "Static Exchange Evaluation" algoritması
+- **Taş Değeri** - Her taşın kendine ait innate değerleri (piyon=100, at=320, vb.)
+- **Taş Konum Değeri** - Her taşın her karedeki yerlerine göre kazandıkları ekstra önem miktarı
+- **Hamle miktarı** - Bir taşın her yapabildiği hamle miktarına eşdeğer şekilde bonus önem miktarı
+- **Piyon aktifliği** - Piyonların aktif kullanımına teşvik için aktiflik ve çifte duruş puanlaması
+- **Tehdit algılama** - Tek hamlelik ileriyi ön görebilen "Static Exchange Evaluation" algoritması
 
 Bu sayede, belki bir stockfish olmasada, öğrenme profilinin gelişimi yoluyla çekici bir deneyim sunmayı hedefliyorum.
 
@@ -95,10 +95,10 @@ Bu sayede, belki bir stockfish olmasada, öğrenme profilinin gelişimi yoluyla 
 
 Her hamle, Nemesis'in oyun sırasındaki MMR ve oyuncu MMR miktarına bağlı dört farklı temelden yararlanır.
 
-1. **Temel Değer** — Bu hamle özünde ne kadar iyi?
-2. **Oyuncu Stil Uyumu** — Oyuncunun oluşturduğu patternlarla nasıl bir etkileşim üretiyor?
-3. **Tahmin Tuzağı** — Oyuncunun yapacağı tahimini hareketleri cezalandırıyor mu?
-4. **MMR Orantılı Noise** — Nemesis oyuncu ile alakalı daha fazla pattern çıkarttıkça rastgelelik miktarı azalır.
+1. **Temel Değer** - Bu hamle özünde ne kadar iyi?
+2. **Oyuncu Stil Uyumu** - Oyuncunun oluşturduğu patternlarla nasıl bir etkileşim üretiyor?
+3. **Tahmin Tuzağı** - Oyuncunun yapacağı tahimini hareketleri cezalandırıyor mu?
+4. **MMR Orantılı Noise** - Nemesis oyuncu ile alakalı daha fazla pattern çıkarttıkça rastgelelik miktarı azalır.
 
 MMR zamanla artar ve Nemesis'in ilk başlarda gerçekten zayıf bile oynadığı zamanlar olur. Ancak zaman ilerledikçe daha keskin hal alan MMR oyuncuyu giderek köşeye sıkıştırır.
 
@@ -175,11 +175,11 @@ Oyun klasik satranç kurallarıyla oynanır; **şah**, **mat**, **pat**, ilk 50 
 
 Şu anda zaman kısıtlamaları sebebiyle, NemesisAI çalışır durumda bir uygulama olsada, yinede developer olarak eklemek istediğim oldukça şey var, bunlar kısaca;
 
-- **Var olan patternlar için elle yazılmış bir kütüphane** — Nemesis seninle alakalı bulduğu bilgileri işliyor, ancak bu patternlara karşı daha dayanıklı olması için bilindik oyun şemalarına dair bir kütüphane (çobana matı, sicilan savunması etc.)
-- **Hamler arası zaman ölçümü** — Oyuncunun her hamlesi arasında ne kadar süre olduğunun hesaplanması ile oyuncunun zihinsel ruh halini anlayıp tedirginliğini avantaja çevirebilmek.
-- **Kalıcı hafıza** — Şu anda Nemesis sadece oyun içinde öğrenir ve oyun bittikten sonra yapay sinir ağı sıfırlanır. Eğitimin oyunlar arası devam'ı en büyük hedeflerimden birisi.
-- **Ses efekleri ve Anmiasyonlar** — Daha temiz, derin ve eğlenceli bir deneyim için oyuna animasyonlar, efekler, sesler eklemek ve zenginleştirmek istiyorum.
-- **Başka Platformlara Yönelik Çalışmalar** — Şu anda sadece Windows 11 sistemlerde test edilmiştir ve sadece Windows sistemlerde denemesi tavsiye edilir. Ancak başka sistemlerdede optimize ve kullanılablir olması hedeflenmektedir.
+- **Var olan patternlar için elle yazılmış bir kütüphane** - Nemesis seninle alakalı bulduğu bilgileri işliyor, ancak bu patternlara karşı daha dayanıklı olması için bilindik oyun şemalarına dair bir kütüphane (çobana matı, sicilan savunması etc.)
+- **Hamler arası zaman ölçümü** - Oyuncunun her hamlesi arasında ne kadar süre olduğunun hesaplanması ile oyuncunun zihinsel ruh halini anlayıp tedirginliğini avantaja çevirebilmek.
+- **Kalıcı hafıza** - Şu anda Nemesis sadece oyun içinde öğrenir ve oyun bittikten sonra yapay sinir ağı sıfırlanır. Eğitimin oyunlar arası devam'ı en büyük hedeflerimden birisi.
+- **Ses efekleri ve Anmiasyonlar** - Daha temiz, derin ve eğlenceli bir deneyim için oyuna animasyonlar, efekler, sesler eklemek ve zenginleştirmek istiyorum.
+- **Başka Platformlara Yönelik Çalışmalar** - Şu anda sadece Windows 11 sistemlerde test edilmiştir ve sadece Windows sistemlerde denemesi tavsiye edilir. Ancak başka sistemlerdede optimize ve kullanılablir olması hedeflenmektedir.
 
 ---
 
