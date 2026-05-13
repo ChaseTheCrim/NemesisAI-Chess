@@ -1,5 +1,13 @@
 # Nemesis AI - Uyumlanan Satranç Rakibi
 
+![Frontend](https://img.shields.io/badge/Frontend-C%2B%2B%2017-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![Backend](https://img.shields.io/badge/Backend-Python%203.9%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![GUI](https://img.shields.io/badge/GUI-Qt%206-41CD52?style=for-the-badge&logo=qt&logoColor=white)
+![AI Engine](https://img.shields.io/badge/AI-PyTorch%20%7C%20LSTM-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![Build](https://img.shields.io/badge/Build-CMake-064F8C?style=for-the-badge&logo=cmake&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Windows%2011-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![License](https://img.shields.io/github/license/ChaseTheCrim/NemesisAI-Chess?style=for-the-badge)
+
 Maç sırasında *seni* öğrenen yapay zeka.
 
 Klasik satranç oynaması için tasarlanmış yapay zeka botları(bkz: stockfish) sadece zor olmak için yapılmış botlardır. Nemesis öyle değildir. **Nemesis sen oyunu oynadıkça aktif olarak *sana* adapte olur**. Senin oyun tarzının bir modelini oluşturur ve sadece senin için özel bir rakip haline gelir. Maç uzadıkça senin düşüncelerinle düşünür, senin fikirlerinle güçlenir ve sana aradığın o eşi benzeri olmayan mücadeleyi sunar.
