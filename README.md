@@ -183,6 +183,15 @@ Oyun klasik satranç kurallarıyla oynanır; **şah**, **mat**, **pat**, ilk 50 
 
 ---
 
+## Developer:
+
+Bu proje ders kapsamında solo bir proje olduğundan dolayı, tek developer ben;
+
+* **Ömer Faruk Ünal** (ChaseTheCrim) - *Lead Developer*
+    * [![GitHub](https://img.shields.io/badge/GitHub-ChaseTheCrim-181717?style=flat&logo=github)](https://github.com/ChaseTheCrim)
+      
+---
+
 ## Lisans
 
 Bu proje MIT Lisansı altında yayınlanmıştır. Klasik pozisyon değerlendiricisi kamuya açık satranç ilkelerinden (materyal değerleri, taş-kare tabloları, hareketlilik, tehdit algılama) inşa edildi ve üçüncü taraf motor kodu içermez.
